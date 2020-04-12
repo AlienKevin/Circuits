@@ -1,0 +1,27 @@
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Circuits</title>
+</head>
+<body>
+  <script src="./elm.js"></script>
+  <main></main>
+  <script src="../node_modules/viz.js/viz.js"></script>
+  <script src="../node_modules/viz.js/full.render.js"></script>
+  <script>
+    var app = Elm.Main.init({ node: document.querySelector('main') });
+    app.ports.showCircuit.subscribe(function(dotString) {
+      var viz = new Viz();
+      viz.renderSVGElement(dotString)
+      .then(function(element) {
+        document.body.appendChild(element);
+      })
+      .catch(error => {
+        viz = new Viz();
+        console.error(error);
+      });
+    });
+  </script>
+</body>
+</html>
