@@ -5181,19 +5181,49 @@ var $elm$core$Task$perform = F2(
 				A2($elm$core$Task$map, toMessage, task)));
 	});
 var $elm$browser$Browser$element = _Browser_element;
-var $elm_community$graph$Graph$DOT$LR = {$: 'LR'};
-var $elm$core$Basics$always = F2(
-	function (a, _v0) {
-		return a;
-	});
-var $elm$core$Maybe$andThen = F2(
-	function (callback, maybeValue) {
-		if (maybeValue.$ === 'Just') {
-			var value = maybeValue.a;
-			return callback(value);
-		} else {
-			return $elm$core$Maybe$Nothing;
-		}
+var $author$project$Main$CompositeGate = function (a) {
+	return {$: 'CompositeGate', a: a};
+};
+var $author$project$Main$NandGate = function (a) {
+	return {$: 'NandGate', a: a};
+};
+var $author$project$Main$andGate = $author$project$Main$CompositeGate(
+	{
+		gates: _List_fromArray(
+			[
+				$author$project$Main$NandGate(
+				{
+					hiddenWires: _List_fromArray(
+						[
+							_Utils_Tuple2(2, 4),
+							_Utils_Tuple2(3, 4)
+						]),
+					outputWires: _List_fromArray(
+						[
+							_Utils_Tuple2(4, 5),
+							_Utils_Tuple2(4, 6)
+						])
+				}),
+				$author$project$Main$NandGate(
+				{
+					hiddenWires: _List_fromArray(
+						[
+							_Utils_Tuple2(5, 7),
+							_Utils_Tuple2(6, 7)
+						]),
+					outputWires: _List_fromArray(
+						[
+							_Utils_Tuple2(7, 8)
+						])
+				})
+			]),
+		inputWires: _List_fromArray(
+			[
+				_Utils_Tuple2(0, 2),
+				_Utils_Tuple2(1, 3)
+			]),
+		outputPins: _List_fromArray(
+			[8])
 	});
 var $elm$core$List$append = F2(
 	function (xs, ys) {
@@ -5206,201 +5236,27 @@ var $elm$core$List$append = F2(
 var $elm$core$List$concat = function (lists) {
 	return A3($elm$core$List$foldr, $elm$core$List$append, _List_Nil, lists);
 };
-var $elm$core$Basics$composeR = F3(
-	function (f, g, x) {
-		return g(
-			f(x));
+var $elm_community$graph$Graph$Edge = F3(
+	function (from, to, label) {
+		return {from: from, label: label, to: to};
 	});
-var $elm$core$Bitwise$and = _Bitwise_and;
-var $elm$core$Basics$neq = _Utils_notEqual;
-var $elm$core$Bitwise$complement = _Bitwise_complement;
-var $elm$core$Bitwise$or = _Bitwise_or;
-var $elm$core$Bitwise$shiftRightZfBy = _Bitwise_shiftRightZfBy;
-var $elm_community$intdict$IntDict$highestBitSet = function (n) {
-	var shiftOr = F2(
-		function (i, shift) {
-			return i | (i >>> shift);
-		});
-	var n1 = A2(shiftOr, n, 1);
-	var n2 = A2(shiftOr, n1, 2);
-	var n3 = A2(shiftOr, n2, 4);
-	var n4 = A2(shiftOr, n3, 8);
-	var n5 = A2(shiftOr, n4, 16);
-	return n5 & (~(n5 >>> 1));
-};
-var $elm$core$Basics$negate = function (n) {
-	return -n;
-};
-var $elm_community$intdict$IntDict$signBit = $elm_community$intdict$IntDict$highestBitSet(-1);
-var $elm$core$Bitwise$xor = _Bitwise_xor;
-var $elm_community$intdict$IntDict$isBranchingBitSet = function (p) {
-	return A2(
-		$elm$core$Basics$composeR,
-		$elm$core$Bitwise$xor($elm_community$intdict$IntDict$signBit),
-		A2(
-			$elm$core$Basics$composeR,
-			$elm$core$Bitwise$and(p.branchingBit),
-			$elm$core$Basics$neq(0)));
-};
-var $elm$core$Basics$not = _Basics_not;
-var $elm_community$intdict$IntDict$higherBitMask = function (branchingBit) {
-	return branchingBit ^ (~(branchingBit - 1));
-};
-var $elm_community$intdict$IntDict$prefixMatches = F2(
-	function (p, n) {
-		return _Utils_eq(
-			n & $elm_community$intdict$IntDict$higherBitMask(p.branchingBit),
-			p.prefixBits);
+var $elm_community$graph$Graph$Node = F2(
+	function (id, label) {
+		return {id: id, label: label};
 	});
-var $elm_community$intdict$IntDict$get = F2(
-	function (key, dict) {
-		get:
-		while (true) {
-			switch (dict.$) {
-				case 'Empty':
-					return $elm$core$Maybe$Nothing;
-				case 'Leaf':
-					var l = dict.a;
-					return _Utils_eq(l.key, key) ? $elm$core$Maybe$Just(l.value) : $elm$core$Maybe$Nothing;
-				default:
-					var i = dict.a;
-					if (!A2($elm_community$intdict$IntDict$prefixMatches, i.prefix, key)) {
-						return $elm$core$Maybe$Nothing;
-					} else {
-						if (A2($elm_community$intdict$IntDict$isBranchingBitSet, i.prefix, key)) {
-							var $temp$key = key,
-								$temp$dict = i.right;
-							key = $temp$key;
-							dict = $temp$dict;
-							continue get;
-						} else {
-							var $temp$key = key,
-								$temp$dict = i.left;
-							key = $temp$key;
-							dict = $temp$dict;
-							continue get;
-						}
-					}
-			}
-		}
-	});
-var $elm_community$graph$Graph$unGraph = function (graph) {
-	var rep = graph.a;
-	return rep;
-};
-var $elm_community$graph$Graph$get = function (nodeId) {
-	return A2(
-		$elm$core$Basics$composeR,
-		$elm_community$graph$Graph$unGraph,
-		$elm_community$intdict$IntDict$get(nodeId));
-};
-var $author$project$Main$getValue = F2(
-	function (id, c) {
-		var _v0 = A2($elm_community$graph$Graph$get, id, c.pins);
-		if (_v0.$ === 'Just') {
-			var ctx = _v0.a;
-			return ctx.node.label;
-		} else {
-			return false;
-		}
-	});
-var $elm$core$Maybe$map = F2(
-	function (f, maybe) {
-		if (maybe.$ === 'Just') {
-			var value = maybe.a;
-			return $elm$core$Maybe$Just(
-				f(value));
-		} else {
-			return $elm$core$Maybe$Nothing;
-		}
-	});
-var $author$project$Main$nand = F2(
-	function (a, b) {
-		return !(a && b);
-	});
-var $elm$core$Tuple$pair = F2(
-	function (a, b) {
-		return _Utils_Tuple2(a, b);
-	});
-var $elm_community$intdict$IntDict$foldr = F3(
-	function (f, acc, dict) {
-		foldr:
-		while (true) {
-			switch (dict.$) {
-				case 'Empty':
-					return acc;
-				case 'Leaf':
-					var l = dict.a;
-					return A3(f, l.key, l.value, acc);
-				default:
-					var i = dict.a;
-					var $temp$f = f,
-						$temp$acc = A3($elm_community$intdict$IntDict$foldr, f, acc, i.right),
-						$temp$dict = i.left;
-					f = $temp$f;
-					acc = $temp$acc;
-					dict = $temp$dict;
-					continue foldr;
-			}
-		}
-	});
-var $elm_community$intdict$IntDict$toList = function (dict) {
-	return A3(
-		$elm_community$intdict$IntDict$foldr,
-		F3(
-			function (key, value, list) {
-				return A2(
-					$elm$core$List$cons,
-					_Utils_Tuple2(key, value),
-					list);
-			}),
-		_List_Nil,
-		dict);
-};
-var $elm$core$List$unzip = function (pairs) {
-	var step = F2(
-		function (_v0, _v1) {
-			var x = _v0.a;
-			var y = _v0.b;
-			var xs = _v1.a;
-			var ys = _v1.b;
-			return _Utils_Tuple2(
-				A2($elm$core$List$cons, x, xs),
-				A2($elm$core$List$cons, y, ys));
-		});
-	return A3(
-		$elm$core$List$foldr,
-		step,
-		_Utils_Tuple2(_List_Nil, _List_Nil),
-		pairs);
-};
 var $elm_community$graph$Graph$Graph = function (a) {
 	return {$: 'Graph', a: a};
 };
-var $elm_community$intdict$IntDict$foldl = F3(
-	function (f, acc, dict) {
-		foldl:
-		while (true) {
-			switch (dict.$) {
-				case 'Empty':
-					return acc;
-				case 'Leaf':
-					var l = dict.a;
-					return A3(f, l.key, l.value, acc);
-				default:
-					var i = dict.a;
-					var $temp$f = f,
-						$temp$acc = A3($elm_community$intdict$IntDict$foldl, f, acc, i.left),
-						$temp$dict = i.right;
-					f = $temp$f;
-					acc = $temp$acc;
-					dict = $temp$dict;
-					continue foldl;
-			}
-		}
+var $elm_community$graph$Graph$NodeContext = F3(
+	function (node, incoming, outgoing) {
+		return {incoming: incoming, node: node, outgoing: outgoing};
 	});
 var $elm_community$intdict$IntDict$Empty = {$: 'Empty'};
 var $elm_community$intdict$IntDict$empty = $elm_community$intdict$IntDict$Empty;
+var $elm$core$Basics$always = F2(
+	function (a, _v0) {
+		return a;
+	});
 var $elm_community$intdict$IntDict$Inner = function (a) {
 	return {$: 'Inner', a: a};
 };
@@ -5436,6 +5292,45 @@ var $elm_community$intdict$IntDict$inner = F3(
 			}
 		}
 	});
+var $elm$core$Bitwise$and = _Bitwise_and;
+var $elm$core$Basics$composeR = F3(
+	function (f, g, x) {
+		return g(
+			f(x));
+	});
+var $elm$core$Basics$neq = _Utils_notEqual;
+var $elm$core$Bitwise$complement = _Bitwise_complement;
+var $elm$core$Bitwise$or = _Bitwise_or;
+var $elm$core$Bitwise$shiftRightZfBy = _Bitwise_shiftRightZfBy;
+var $elm_community$intdict$IntDict$highestBitSet = function (n) {
+	var shiftOr = F2(
+		function (i, shift) {
+			return i | (i >>> shift);
+		});
+	var n1 = A2(shiftOr, n, 1);
+	var n2 = A2(shiftOr, n1, 2);
+	var n3 = A2(shiftOr, n2, 4);
+	var n4 = A2(shiftOr, n3, 8);
+	var n5 = A2(shiftOr, n4, 16);
+	return n5 & (~(n5 >>> 1));
+};
+var $elm$core$Basics$negate = function (n) {
+	return -n;
+};
+var $elm_community$intdict$IntDict$signBit = $elm_community$intdict$IntDict$highestBitSet(-1);
+var $elm$core$Bitwise$xor = _Bitwise_xor;
+var $elm_community$intdict$IntDict$isBranchingBitSet = function (p) {
+	return A2(
+		$elm$core$Basics$composeR,
+		$elm$core$Bitwise$xor($elm_community$intdict$IntDict$signBit),
+		A2(
+			$elm$core$Basics$composeR,
+			$elm$core$Bitwise$and(p.branchingBit),
+			$elm$core$Basics$neq(0)));
+};
+var $elm_community$intdict$IntDict$higherBitMask = function (branchingBit) {
+	return branchingBit ^ (~(branchingBit - 1));
+};
 var $elm_community$intdict$IntDict$lcp = F2(
 	function (x, y) {
 		var branchingBit = $elm_community$intdict$IntDict$highestBitSet(x ^ y);
@@ -5450,6 +5345,12 @@ var $elm_community$intdict$IntDict$leaf = F2(
 	function (k, v) {
 		return $elm_community$intdict$IntDict$Leaf(
 			{key: k, value: v});
+	});
+var $elm_community$intdict$IntDict$prefixMatches = F2(
+	function (p, n) {
+		return _Utils_eq(
+			n & $elm_community$intdict$IntDict$higherBitMask(p.branchingBit),
+			p.prefixBits);
 	});
 var $elm_community$intdict$IntDict$update = F3(
 	function (key, alter, dict) {
@@ -5499,6 +5400,278 @@ var $elm_community$intdict$IntDict$update = F3(
 						key,
 						alteredNode($elm$core$Maybe$Nothing)),
 					_Utils_Tuple2(i.prefix.prefixBits, dict));
+		}
+	});
+var $elm_community$intdict$IntDict$insert = F3(
+	function (key, value, dict) {
+		return A3(
+			$elm_community$intdict$IntDict$update,
+			key,
+			$elm$core$Basics$always(
+				$elm$core$Maybe$Just(value)),
+			dict);
+	});
+var $elm$core$Maybe$map = F2(
+	function (f, maybe) {
+		if (maybe.$ === 'Just') {
+			var value = maybe.a;
+			return $elm$core$Maybe$Just(
+				f(value));
+		} else {
+			return $elm$core$Maybe$Nothing;
+		}
+	});
+var $elm$core$Basics$not = _Basics_not;
+var $elm_community$intdict$IntDict$get = F2(
+	function (key, dict) {
+		get:
+		while (true) {
+			switch (dict.$) {
+				case 'Empty':
+					return $elm$core$Maybe$Nothing;
+				case 'Leaf':
+					var l = dict.a;
+					return _Utils_eq(l.key, key) ? $elm$core$Maybe$Just(l.value) : $elm$core$Maybe$Nothing;
+				default:
+					var i = dict.a;
+					if (!A2($elm_community$intdict$IntDict$prefixMatches, i.prefix, key)) {
+						return $elm$core$Maybe$Nothing;
+					} else {
+						if (A2($elm_community$intdict$IntDict$isBranchingBitSet, i.prefix, key)) {
+							var $temp$key = key,
+								$temp$dict = i.right;
+							key = $temp$key;
+							dict = $temp$dict;
+							continue get;
+						} else {
+							var $temp$key = key,
+								$temp$dict = i.left;
+							key = $temp$key;
+							dict = $temp$dict;
+							continue get;
+						}
+					}
+			}
+		}
+	});
+var $elm_community$intdict$IntDict$member = F2(
+	function (key, dict) {
+		var _v0 = A2($elm_community$intdict$IntDict$get, key, dict);
+		if (_v0.$ === 'Just') {
+			return true;
+		} else {
+			return false;
+		}
+	});
+var $elm_community$graph$Graph$fromNodesAndEdges = F2(
+	function (nodes_, edges_) {
+		var nodeRep = A3(
+			$elm$core$List$foldl,
+			function (n) {
+				return A2(
+					$elm_community$intdict$IntDict$insert,
+					n.id,
+					A3($elm_community$graph$Graph$NodeContext, n, $elm_community$intdict$IntDict$empty, $elm_community$intdict$IntDict$empty));
+			},
+			$elm_community$intdict$IntDict$empty,
+			nodes_);
+		var addEdge = F2(
+			function (edge, rep) {
+				var updateOutgoing = function (ctx) {
+					return _Utils_update(
+						ctx,
+						{
+							outgoing: A3($elm_community$intdict$IntDict$insert, edge.to, edge.label, ctx.outgoing)
+						});
+				};
+				var updateIncoming = function (ctx) {
+					return _Utils_update(
+						ctx,
+						{
+							incoming: A3($elm_community$intdict$IntDict$insert, edge.from, edge.label, ctx.incoming)
+						});
+				};
+				return A3(
+					$elm_community$intdict$IntDict$update,
+					edge.to,
+					$elm$core$Maybe$map(updateIncoming),
+					A3(
+						$elm_community$intdict$IntDict$update,
+						edge.from,
+						$elm$core$Maybe$map(updateOutgoing),
+						rep));
+			});
+		var addEdgeIfValid = F2(
+			function (edge, rep) {
+				return (A2($elm_community$intdict$IntDict$member, edge.from, rep) && A2($elm_community$intdict$IntDict$member, edge.to, rep)) ? A2(addEdge, edge, rep) : rep;
+			});
+		return $elm_community$graph$Graph$Graph(
+			A3($elm$core$List$foldl, addEdgeIfValid, nodeRep, edges_));
+	});
+var $elm$core$Tuple$second = function (_v0) {
+	var y = _v0.b;
+	return y;
+};
+var $elm_community$graph$Graph$fromNodeLabelsAndEdgePairs = F2(
+	function (labels, edgePairs) {
+		var nodes_ = A3(
+			$elm$core$List$foldl,
+			F2(
+				function (lbl, _v1) {
+					var id = _v1.a;
+					var nodes__ = _v1.b;
+					return _Utils_Tuple2(
+						id + 1,
+						A2(
+							$elm$core$List$cons,
+							A2($elm_community$graph$Graph$Node, id, lbl),
+							nodes__));
+				}),
+			_Utils_Tuple2(0, _List_Nil),
+			labels).b;
+		var edges_ = A2(
+			$elm$core$List$map,
+			function (_v0) {
+				var from = _v0.a;
+				var to = _v0.b;
+				return A3($elm_community$graph$Graph$Edge, from, to, _Utils_Tuple0);
+			},
+			edgePairs);
+		return A2($elm_community$graph$Graph$fromNodesAndEdges, nodes_, edges_);
+	});
+var $elm$core$List$repeatHelp = F3(
+	function (result, n, value) {
+		repeatHelp:
+		while (true) {
+			if (n <= 0) {
+				return result;
+			} else {
+				var $temp$result = A2($elm$core$List$cons, value, result),
+					$temp$n = n - 1,
+					$temp$value = value;
+				result = $temp$result;
+				n = $temp$n;
+				value = $temp$value;
+				continue repeatHelp;
+			}
+		}
+	});
+var $elm$core$List$repeat = F2(
+	function (n, value) {
+		return A3($elm$core$List$repeatHelp, _List_Nil, n, value);
+	});
+var $elm$core$List$sum = function (numbers) {
+	return A3($elm$core$List$foldl, $elm$core$Basics$add, 0, numbers);
+};
+var $author$project$Main$construct = function (gate) {
+	var outputs = function () {
+		if (gate.$ === 'NandGate') {
+			var outputWires = gate.a.outputWires;
+			return A2($elm$core$List$map, $elm$core$Tuple$second, outputWires);
+		} else {
+			var outputPins = gate.a.outputPins;
+			return outputPins;
+		}
+	}();
+	var inputs = function () {
+		if (gate.$ === 'NandGate') {
+			return _List_fromArray(
+				[0, 1]);
+		} else {
+			var inputWires = gate.a.inputWires;
+			return A2($elm$core$List$map, $elm$core$Tuple$first, inputWires);
+		}
+	}();
+	var gatherWires = function (g) {
+		if (g.$ === 'NandGate') {
+			var hiddenWires = g.a.hiddenWires;
+			var outputWires = g.a.outputWires;
+			return _Utils_ap(hiddenWires, outputWires);
+		} else {
+			var inputWires = g.a.inputWires;
+			var gates = g.a.gates;
+			return _Utils_ap(
+				inputWires,
+				$elm$core$List$concat(
+					A2($elm$core$List$map, gatherWires, gates)));
+		}
+	};
+	var wires = gatherWires(gate);
+	var countNodes = function (g) {
+		if (g.$ === 'NandGate') {
+			return 3;
+		} else {
+			var inputWires = g.a.inputWires;
+			var gates = g.a.gates;
+			var outputPins = g.a.outputPins;
+			return ($elm$core$List$length(inputWires) + $elm$core$List$sum(
+				A2($elm$core$List$map, countNodes, gates))) + $elm$core$List$length(outputPins);
+		}
+	};
+	var nodes = A2(
+		$elm$core$List$repeat,
+		countNodes(gate),
+		false);
+	var pins = A2($elm_community$graph$Graph$fromNodeLabelsAndEdgePairs, nodes, wires);
+	return {inputPins: inputs, outputPins: outputs, pins: pins};
+};
+var $elm$core$Maybe$andThen = F2(
+	function (callback, maybeValue) {
+		if (maybeValue.$ === 'Just') {
+			var value = maybeValue.a;
+			return callback(value);
+		} else {
+			return $elm$core$Maybe$Nothing;
+		}
+	});
+var $elm_community$graph$Graph$unGraph = function (graph) {
+	var rep = graph.a;
+	return rep;
+};
+var $elm_community$graph$Graph$get = function (nodeId) {
+	return A2(
+		$elm$core$Basics$composeR,
+		$elm_community$graph$Graph$unGraph,
+		$elm_community$intdict$IntDict$get(nodeId));
+};
+var $author$project$Main$getValue = F2(
+	function (id, c) {
+		var _v0 = A2($elm_community$graph$Graph$get, id, c.pins);
+		if (_v0.$ === 'Just') {
+			var ctx = _v0.a;
+			return ctx.node.label;
+		} else {
+			return false;
+		}
+	});
+var $author$project$Main$nand = F2(
+	function (a, b) {
+		return !(a && b);
+	});
+var $elm$core$Tuple$pair = F2(
+	function (a, b) {
+		return _Utils_Tuple2(a, b);
+	});
+var $elm_community$intdict$IntDict$foldl = F3(
+	function (f, acc, dict) {
+		foldl:
+		while (true) {
+			switch (dict.$) {
+				case 'Empty':
+					return acc;
+				case 'Leaf':
+					var l = dict.a;
+					return A3(f, l.key, l.value, acc);
+				default:
+					var i = dict.a;
+					var $temp$f = f,
+						$temp$acc = A3($elm_community$intdict$IntDict$foldl, f, acc, i.left),
+						$temp$dict = i.right;
+					f = $temp$f;
+					acc = $temp$acc;
+					dict = $temp$dict;
+					continue foldl;
+			}
 		}
 	});
 var $elm_community$graph$Graph$applyEdgeDiff = F3(
@@ -5643,15 +5816,6 @@ var $elm_community$graph$Graph$computeEdgeDiff = F2(
 			}
 		}
 	});
-var $elm_community$intdict$IntDict$insert = F3(
-	function (key, value, dict) {
-		return A3(
-			$elm_community$intdict$IntDict$update,
-			key,
-			$elm$core$Basics$always(
-				$elm$core$Maybe$Just(value)),
-			dict);
-	});
 var $elm_community$intdict$IntDict$filter = F2(
 	function (predicate, dict) {
 		var add = F3(
@@ -5659,15 +5823,6 @@ var $elm_community$intdict$IntDict$filter = F2(
 				return A2(predicate, k, v) ? A3($elm_community$intdict$IntDict$insert, k, v, d) : d;
 			});
 		return A3($elm_community$intdict$IntDict$foldl, add, $elm_community$intdict$IntDict$empty, dict);
-	});
-var $elm_community$intdict$IntDict$member = F2(
-	function (key, dict) {
-		var _v0 = A2($elm_community$intdict$IntDict$get, key, dict);
-		if (_v0.$ === 'Just') {
-			return true;
-		} else {
-			return false;
-		}
 	});
 var $elm_community$graph$Graph$update = F2(
 	function (nodeId, updater) {
@@ -5704,6 +5859,93 @@ var $elm_community$graph$Graph$update = F2(
 			$elm_community$graph$Graph$unGraph,
 			A2($elm$core$Basics$composeR, wrappedUpdater, $elm_community$graph$Graph$Graph));
 	});
+var $author$project$Main$setPins = F2(
+	function (newValues, c) {
+		return A3(
+			$elm$core$List$foldl,
+			F2(
+				function (_v0, newCircuit) {
+					var id = _v0.a;
+					var newValue = _v0.b;
+					return _Utils_update(
+						newCircuit,
+						{
+							pins: A3(
+								$elm_community$graph$Graph$update,
+								id,
+								function (currentCtx) {
+									return A2(
+										$elm$core$Maybe$map,
+										function (ctx) {
+											var node = ctx.node;
+											return _Utils_update(
+												ctx,
+												{
+													node: _Utils_update(
+														node,
+														{label: newValue})
+												});
+										},
+										currentCtx);
+								},
+								newCircuit.pins)
+						});
+				}),
+			c,
+			newValues);
+	});
+var $elm_community$intdict$IntDict$foldr = F3(
+	function (f, acc, dict) {
+		foldr:
+		while (true) {
+			switch (dict.$) {
+				case 'Empty':
+					return acc;
+				case 'Leaf':
+					var l = dict.a;
+					return A3(f, l.key, l.value, acc);
+				default:
+					var i = dict.a;
+					var $temp$f = f,
+						$temp$acc = A3($elm_community$intdict$IntDict$foldr, f, acc, i.right),
+						$temp$dict = i.left;
+					f = $temp$f;
+					acc = $temp$acc;
+					dict = $temp$dict;
+					continue foldr;
+			}
+		}
+	});
+var $elm_community$intdict$IntDict$toList = function (dict) {
+	return A3(
+		$elm_community$intdict$IntDict$foldr,
+		F3(
+			function (key, value, list) {
+				return A2(
+					$elm$core$List$cons,
+					_Utils_Tuple2(key, value),
+					list);
+			}),
+		_List_Nil,
+		dict);
+};
+var $elm$core$List$unzip = function (pairs) {
+	var step = F2(
+		function (_v0, _v1) {
+			var x = _v0.a;
+			var y = _v0.b;
+			var xs = _v1.a;
+			var ys = _v1.b;
+			return _Utils_Tuple2(
+				A2($elm$core$List$cons, x, xs),
+				A2($elm$core$List$cons, y, ys));
+		});
+	return A3(
+		$elm$core$List$foldr,
+		step,
+		_Utils_Tuple2(_List_Nil, _List_Nil),
+		pairs);
+};
 var $author$project$Main$evalHelper = F2(
 	function (ids, c) {
 		evalHelper:
@@ -5752,38 +5994,10 @@ var $author$project$Main$evalHelper = F2(
 						ids));
 				var newValues = _v0.a;
 				var nextIdLists = _v0.b;
-				var updatedCircuit = A3(
-					$elm$core$List$foldl,
-					F2(
-						function (_v4, newCircuit) {
-							var id = _v4.a;
-							var newValue = _v4.b;
-							return _Utils_update(
-								newCircuit,
-								{
-									pins: A3(
-										$elm_community$graph$Graph$update,
-										id,
-										function (currentCtx) {
-											return A2(
-												$elm$core$Maybe$map,
-												function (ctx) {
-													var node = ctx.node;
-													return _Utils_update(
-														ctx,
-														{
-															node: _Utils_update(
-																node,
-																{label: newValue})
-														});
-												},
-												currentCtx);
-										},
-										newCircuit.pins)
-								});
-						}),
-					c,
-					A3($elm$core$List$map2, $elm$core$Tuple$pair, ids, newValues));
+				var updatedCircuit = A2(
+					$author$project$Main$setPins,
+					A3($elm$core$List$map2, $elm$core$Tuple$pair, ids, newValues),
+					c);
 				var nextIds = $elm$core$List$concat(nextIdLists);
 				var $temp$ids = nextIds,
 					$temp$c = updatedCircuit;
@@ -5830,6 +6044,7 @@ var $author$project$Main$eval = function (c) {
 		c.inputPins);
 	return A2($author$project$Main$evalHelper, startIds, c);
 };
+var $elm_community$graph$Graph$DOT$LR = {$: 'LR'};
 var $elm$core$Dict$RBEmpty_elm_builtin = {$: 'RBEmpty_elm_builtin'};
 var $elm$core$Dict$empty = $elm$core$Dict$RBEmpty_elm_builtin;
 var $elm$core$Dict$Black = {$: 'Black'};
@@ -5953,94 +6168,6 @@ var $elm$core$Dict$fromList = function (assocs) {
 		$elm$core$Dict$empty,
 		assocs);
 };
-var $elm_community$graph$Graph$Edge = F3(
-	function (from, to, label) {
-		return {from: from, label: label, to: to};
-	});
-var $elm_community$graph$Graph$Node = F2(
-	function (id, label) {
-		return {id: id, label: label};
-	});
-var $elm_community$graph$Graph$NodeContext = F3(
-	function (node, incoming, outgoing) {
-		return {incoming: incoming, node: node, outgoing: outgoing};
-	});
-var $elm_community$graph$Graph$fromNodesAndEdges = F2(
-	function (nodes_, edges_) {
-		var nodeRep = A3(
-			$elm$core$List$foldl,
-			function (n) {
-				return A2(
-					$elm_community$intdict$IntDict$insert,
-					n.id,
-					A3($elm_community$graph$Graph$NodeContext, n, $elm_community$intdict$IntDict$empty, $elm_community$intdict$IntDict$empty));
-			},
-			$elm_community$intdict$IntDict$empty,
-			nodes_);
-		var addEdge = F2(
-			function (edge, rep) {
-				var updateOutgoing = function (ctx) {
-					return _Utils_update(
-						ctx,
-						{
-							outgoing: A3($elm_community$intdict$IntDict$insert, edge.to, edge.label, ctx.outgoing)
-						});
-				};
-				var updateIncoming = function (ctx) {
-					return _Utils_update(
-						ctx,
-						{
-							incoming: A3($elm_community$intdict$IntDict$insert, edge.from, edge.label, ctx.incoming)
-						});
-				};
-				return A3(
-					$elm_community$intdict$IntDict$update,
-					edge.to,
-					$elm$core$Maybe$map(updateIncoming),
-					A3(
-						$elm_community$intdict$IntDict$update,
-						edge.from,
-						$elm$core$Maybe$map(updateOutgoing),
-						rep));
-			});
-		var addEdgeIfValid = F2(
-			function (edge, rep) {
-				return (A2($elm_community$intdict$IntDict$member, edge.from, rep) && A2($elm_community$intdict$IntDict$member, edge.to, rep)) ? A2(addEdge, edge, rep) : rep;
-			});
-		return $elm_community$graph$Graph$Graph(
-			A3($elm$core$List$foldl, addEdgeIfValid, nodeRep, edges_));
-	});
-var $elm$core$Tuple$second = function (_v0) {
-	var y = _v0.b;
-	return y;
-};
-var $elm_community$graph$Graph$fromNodeLabelsAndEdgePairs = F2(
-	function (labels, edgePairs) {
-		var nodes_ = A3(
-			$elm$core$List$foldl,
-			F2(
-				function (lbl, _v1) {
-					var id = _v1.a;
-					var nodes__ = _v1.b;
-					return _Utils_Tuple2(
-						id + 1,
-						A2(
-							$elm$core$List$cons,
-							A2($elm_community$graph$Graph$Node, id, lbl),
-							nodes__));
-				}),
-			_Utils_Tuple2(0, _List_Nil),
-			labels).b;
-		var edges_ = A2(
-			$elm$core$List$map,
-			function (_v0) {
-				var from = _v0.a;
-				var to = _v0.b;
-				return A3($elm_community$graph$Graph$Edge, from, to, _Utils_Tuple0);
-			},
-			edgePairs);
-		return A2($elm_community$graph$Graph$fromNodesAndEdges, nodes_, edges_);
-	});
 var $elm_community$graph$Graph$edges = function (graph) {
 	var flippedFoldl = F3(
 		function (f, dict, list) {
@@ -6177,36 +6304,9 @@ var $elm_community$graph$Graph$DOT$outputWithStylesAndAttributes = F4(
 					'}'
 				]));
 	});
-var $elm$core$List$repeatHelp = F3(
-	function (result, n, value) {
-		repeatHelp:
-		while (true) {
-			if (n <= 0) {
-				return result;
-			} else {
-				var $temp$result = A2($elm$core$List$cons, value, result),
-					$temp$n = n - 1,
-					$temp$value = value;
-				result = $temp$result;
-				n = $temp$n;
-				value = $temp$value;
-				continue repeatHelp;
-			}
-		}
-	});
-var $elm$core$List$repeat = F2(
-	function (n, value) {
-		return A3($elm$core$List$repeatHelp, _List_Nil, n, value);
-	});
-var $author$project$Main$showCircuit = _Platform_outgoingPort('showCircuit', $elm$json$Json$Encode$string);
-var $author$project$Main$init = function (_v0) {
+var $author$project$Main$showCircuitPort = _Platform_outgoingPort('showCircuitPort', $elm$json$Json$Encode$string);
+var $author$project$Main$showCircuit = function (c) {
 	var styles = {edge: '', graph: '', node: '', rankdir: $elm_community$graph$Graph$DOT$LR};
-	var outputPins = _List_fromArray(
-		[8]);
-	var nodes = _Utils_ap(
-		_List_fromArray(
-			[false, false]),
-		A2($elm$core$List$repeat, 7, false));
 	var nodeLabelToString = function (label) {
 		return label ? '1' : '0';
 	};
@@ -6224,21 +6324,6 @@ var $author$project$Main$init = function (_v0) {
 						_Utils_Tuple2('color', 'green')
 					]) : _List_Nil));
 	};
-	var inputPins = _List_fromArray(
-		[0, 1]);
-	var edges = _List_fromArray(
-		[
-			_Utils_Tuple2(0, 2),
-			_Utils_Tuple2(1, 3),
-			_Utils_Tuple2(2, 4),
-			_Utils_Tuple2(3, 4),
-			_Utils_Tuple2(4, 5),
-			_Utils_Tuple2(4, 6),
-			_Utils_Tuple2(5, 7),
-			_Utils_Tuple2(6, 7),
-			_Utils_Tuple2(7, 8)
-		]);
-	var pins = A2($elm_community$graph$Graph$fromNodeLabelsAndEdgePairs, nodes, edges);
 	var edgeLabelToString = $elm$core$Basics$always('');
 	var edgeLabelToAttributes = function (label) {
 		return $elm$core$Dict$fromList(
@@ -6249,12 +6334,22 @@ var $author$project$Main$init = function (_v0) {
 					edgeLabelToString(label))
 				]));
 	};
+	return $author$project$Main$showCircuitPort(
+		A4($elm_community$graph$Graph$DOT$outputWithStylesAndAttributes, styles, nodeLabelToAttributes, edgeLabelToAttributes, c.pins));
+};
+var $author$project$Main$init = function (_v0) {
+	var setInputPins = $author$project$Main$setPins(
+		_List_fromArray(
+			[
+				_Utils_Tuple2(0, false),
+				_Utils_Tuple2(1, true)
+			]));
 	var circuit = $author$project$Main$eval(
-		{inputPins: inputPins, outputPins: outputPins, pins: pins});
+		setInputPins(
+			$author$project$Main$construct($author$project$Main$andGate)));
 	return _Utils_Tuple2(
 		{circuit: circuit},
-		$author$project$Main$showCircuit(
-			A4($elm_community$graph$Graph$DOT$outputWithStylesAndAttributes, styles, nodeLabelToAttributes, edgeLabelToAttributes, circuit.pins)));
+		$author$project$Main$showCircuit(circuit));
 };
 var $elm$core$Platform$Sub$batch = _Platform_batch;
 var $elm$core$Platform$Sub$none = $elm$core$Platform$Sub$batch(_List_Nil);

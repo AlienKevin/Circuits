@@ -8,7 +8,7 @@ import Dict
 import IntDict
 
 
-port showCircuit : String -> Cmd msg
+port showCircuitPort : String -> Cmd msg
 
 
 type alias Model =
@@ -22,33 +22,88 @@ type alias Circuit =
   }
 
 
+type Gate
+  = NandGate
+    { hiddenWires : List Wire
+    , outputWires : List Wire
+    }
+  | CompositeGate
+    { inputWires : List Wire
+    , gates : List Gate
+    , outputPins : List NodeId
+    }
+
+
+type alias Wire = (NodeId, NodeId)
+
+
 init : () -> (Model, Cmd Msg)
 init _ =
   let
+    setInputPins =
+       setPins
+        [ (0, False)
+        , (1, True)
+        ]
+    circuit = eval <| setInputPins <| construct andGate
+  in
+  ({ circuit =
+    circuit
+  }
+  , showCircuit circuit
+  )
+
+
+construct : Gate -> Circuit
+construct gate =
+  let
+    inputs =
+      case gate of
+        NandGate _ ->
+          [ 0, 1 ]
+        CompositeGate { inputWires } ->
+          List.map Tuple.first inputWires
+
     nodes =
-      [ False, False ] ++ List.repeat 7 False
+      List.repeat (countNodes gate) False
+
+    countNodes : Gate -> Int
+    countNodes g =
+      case g of
+        NandGate _ ->
+          3
+        CompositeGate { inputWires, gates, outputPins } ->
+          List.length inputWires + (List.sum <| List.map countNodes gates) + List.length outputPins
     
-    edges =
-      [ (0, 2)
-      , (1, 3)
-      , (2, 4)
-      , (3, 4)
-      , (4, 5)
-      , (4, 6)
-      , (5, 7)
-      , (6, 7)
-      , (7, 8)
-      ]
-    
-    inputPins =
-      [ 0, 1 ]
-    
-    outputPins =
-      [ 8 ]
-    
+    gatherWires : Gate -> List Wire
+    gatherWires g =
+      case g of
+        NandGate { hiddenWires, outputWires } ->
+          hiddenWires ++ outputWires
+        CompositeGate { inputWires, gates } ->
+          inputWires ++ List.concat (List.map gatherWires gates)
+
+    wires =
+      gatherWires gate
+
+    outputs =
+      case gate of
+        NandGate { outputWires } ->
+          List.map Tuple.second outputWires
+        CompositeGate { outputPins } ->
+          outputPins
+
     pins =
-      Graph.fromNodeLabelsAndEdgePairs nodes edges
-    
+      Graph.fromNodeLabelsAndEdgePairs nodes wires
+  in
+  { inputPins = inputs
+  , outputPins = outputs
+  , pins = pins
+  }
+
+showCircuit : Circuit -> Cmd Msg
+showCircuit c =
+  let
     styles =
       { rankdir = LR
       , graph = ""
@@ -75,18 +130,41 @@ init _ =
       Dict.fromList
         [ ("label", edgeLabelToString label)
         ]
-    
-    circuit =
-      eval { inputPins = inputPins 
-      , pins = pins
-      , outputPins = outputPins
-      }
   in
-  ({ circuit =
-    circuit
-  }
-  , showCircuit <| Graph.DOT.outputWithStylesAndAttributes styles nodeLabelToAttributes edgeLabelToAttributes circuit.pins
-  )
+  showCircuitPort <| Graph.DOT.outputWithStylesAndAttributes styles nodeLabelToAttributes edgeLabelToAttributes c.pins
+
+
+andGate : Gate
+andGate =
+  CompositeGate
+    { inputWires =
+      [ (0, 2)
+      , (1, 3)
+      ]
+    , outputPins =
+      [ 8 ]
+    , gates =
+      [ NandGate
+        { hiddenWires =
+          [ (2, 4)
+          , (3, 4)
+          ]
+        , outputWires =
+          [ (4, 5)
+          , (4, 6)
+          ]
+        }
+      , NandGate
+        { hiddenWires =
+          [ (5, 7)
+          , (6, 7)
+          ]
+        , outputWires =
+          [ (7, 8)
+          ]
+        }
+      ]
+    }
 
 
 type Msg
@@ -154,34 +232,38 @@ evalHelper ids c =
             )
             ids
       updatedCircuit =
-        List.foldl
-          (\(id, newValue) newCircuit ->
-            { newCircuit
-              | pins =
-                Graph.update
-                  id
-                  (\currentCtx ->
-                    Maybe.map
-                      (\ctx ->
-                        let
-                          node = ctx.node
-                        in
-                        { ctx
-                          | node = { node | label = newValue }
-                        }
-                      )
-                      currentCtx
-                  )
-                  newCircuit.pins
-            }
-          )
-          c
-          (List.map2 Tuple.pair ids newValues)
+        setPins (List.map2 Tuple.pair ids newValues) c
       nextIds =
         List.concat nextIdLists
     in
     evalHelper nextIds updatedCircuit
 
+
+setPins : List (NodeId, Bool) -> Circuit -> Circuit
+setPins newValues c =
+  List.foldl
+    (\(id, newValue) newCircuit ->
+      { newCircuit
+        | pins =
+          Graph.update
+            id
+            (\currentCtx ->
+              Maybe.map
+                (\ctx ->
+                  let
+                    node = ctx.node
+                  in
+                  { ctx
+                    | node = { node | label = newValue }
+                  }
+                )
+                currentCtx
+            )
+            newCircuit.pins
+      }
+    )
+    c
+    newValues
 
 nand : Bool -> Bool -> Bool
 nand a b =
